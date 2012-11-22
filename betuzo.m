@@ -48,7 +48,7 @@ NSString* nevLekero (NSString* betu) {
 }
 
 void usage() {
-    printf("Használat: Betuzo <Betűzendő szó> [-i] [-nevek] [/path/to/name/list]\n\t-i\tInteraktív mód\n");
+    printf("Használat: Speller <Word to spell> [-i] [-names] [/path/to/name/list]\n\t-i\tInteractive mode\n");
 }
 
 void betuzes(NSString *szoveg) {
