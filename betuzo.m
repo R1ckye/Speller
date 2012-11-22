@@ -1,6 +1,6 @@
 //
 //  main.m
-//  Betűző
+//  Betűző
 //
 //  Created by Richard Murvai (Rickye) on 2012.09.01..
 //
@@ -48,7 +48,39 @@ NSString* nevLekero (NSString* betu) {
 }
 
 void usage() {
-    printf("Használat: Betuzo <Betűzendő szó> [-nevek] [/path/to/name/list]\n");
+    printf("Használat: Betuzo <Betűzendő szó> [-i] [-nevek] [/path/to/name/list]\n\t-i\tInteraktív mód\n");
+}
+
+void betuzes(NSString *szoveg) {
+    for (int i = 0; i < [szoveg length]; i++)
+    {
+        NSString *substr = [szoveg substringWithRange:NSMakeRange(i,1)];
+        if ([substr isEqualToString:@" "]) {
+            printf("\n");
+        }
+        else {
+            NSString *nev = nevLekero(substr);
+            if([nev isEqualToString:[substr lowercaseString]] || [nev isEqualToString:[substr capitalizedString]]) {
+                printf("Nincs szó "); printf("%s", [substr UTF8String]); printf(" betűvel!\n");
+            }
+            else {
+                printf("%s", [nev UTF8String]);
+                printf("\n");
+            }
+        }
+    }
+}
+
+void interaktiv() {
+    while (1) {
+        printf("--->");
+        char  input;
+        scanf("%s", &input);
+        if (!strcmp(&input, "quit")) {
+            exit(0);
+        }
+        betuzes([NSString stringWithCString:&input encoding:NSUTF8StringEncoding]);
+    }
 }
 
 int main(int argc, const char * argv[])
@@ -62,24 +94,14 @@ int main(int argc, const char * argv[])
             else {
                 setup(nil);
             }
-            NSString *szoveg = [NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding];
-            for (int i = 0; i < [szoveg length]; i++)
-            {
-                NSString *substr = [szoveg substringWithRange:NSMakeRange(i,1)];
-                if ([substr isEqualToString:@" "]) {
-                    printf("\n");
-                }
-                else {
-                    NSString *nev = nevLekero(substr);
-                    if([nev isEqualToString:[substr lowercaseString]] || [nev isEqualToString:[substr capitalizedString]]) {
-                        printf("Nincs szó "); printf([substr UTF8String]); printf(" betűvel!\n");
-                    }
-                    else {
-                        printf([nev UTF8String]);
-                        printf("\n");
-                    }
-                }
-            } 
+            NSMutableArray *args = [NSMutableArray array];
+            for (int i = 1; i < argc; i++) {
+                [args addObject:[NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding]];
+            }
+            if ([args containsObject:@"-i"]) {
+                interaktiv();
+            }
+            betuzes([NSString stringWithCString:argv[1] encoding:NSUTF8StringEncoding]);
         }
         else {
             usage();
@@ -88,5 +110,3 @@ int main(int argc, const char * argv[])
     }
     return 0;
 }
-
-
